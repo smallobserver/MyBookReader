@@ -7,6 +7,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 import com.tinyblack.book.api.support.util.AppUtils;
+import com.tinyblack.book.crashdeal.NeverCrash;
+import com.tinyblack.book.crashdeal.SDKCrashHandler;
 import com.tinyblack.book.service.DownloadService;
 
 public class MApplication extends Application {
@@ -16,21 +18,17 @@ public class MApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (BuildConfig.IS_RELEASE) {
-            String channel = "debug";
-            try {
-                ApplicationInfo appInfo = getPackageManager()
-                        .getApplicationInfo(getPackageName(),
-                                PackageManager.GET_META_DATA);
-                channel = appInfo.metaData.getString("UMENG_CHANNEL_VALUE");
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-//            MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this, getString(R.string.umeng_key), channel, MobclickAgent.EScenarioType.E_UM_NORMAL, true));
-        }
         instance = this;
         AppUtils.init(this);
+        initCrashCatch();
         startService(new Intent(this, DownloadService.class));
+    }
+
+    /**
+     * 初始化异常捕获
+     */
+    private void initCrashCatch() {
+        NeverCrash.init(new SDKCrashHandler());
     }
 
     public static MApplication getInstance() {

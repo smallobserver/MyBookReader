@@ -26,6 +26,7 @@ import com.monke.mprogressbar.MHorProgressBar;
 import com.monke.mprogressbar.OnProgressListener;
 import com.tinyblack.basemvplib.AppActivityManager;
 import com.tinyblack.book.R;
+import com.tinyblack.book.api.support.Constant;
 import com.tinyblack.book.base.MBaseActivity;
 import com.tinyblack.book.bean.DownloadChapterBean;
 import com.tinyblack.book.bean.DownloadChapterListBean;
@@ -248,7 +249,7 @@ public class ReadBookActivity extends MBaseActivity<IBookReadPresenter> implemen
                                     item.setDurChapterIndex(mPresenter.getBookShelf().getBookInfoBean().getChapterlist().get(i).getDurChapterIndex());
                                     item.setDurChapterName(mPresenter.getBookShelf().getBookInfoBean().getChapterlist().get(i).getDurChapterName());
                                     item.setDurChapterUrl(mPresenter.getBookShelf().getBookInfoBean().getChapterlist().get(i).getDurChapterUrl());
-                                    item.setTag(mPresenter.getBookShelf().getTag());
+                                    item.setTag(mPresenter.getBookShelf().getNoteUrl());
                                     item.setBookName(mPresenter.getBookShelf().getBookInfoBean().getName());
                                     item.setCoverUrl(mPresenter.getBookShelf().getBookInfoBean().getCoverUrl());
                                     result.add(item);

@@ -6,13 +6,15 @@ import android.database.sqlite.SQLiteDatabase;
 import com.tinyblack.book.MApplication;
 
 public class DbHelper {
+    public static final String DB_NAME = "tinyblackbook_db";
+
     private DaoMaster.DevOpenHelper mHelper;
     private SQLiteDatabase db;
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
 
-    private DbHelper(){
-        mHelper = new DaoMaster.DevOpenHelper(MApplication.getInstance(), "monkebook_db", null);
+    private DbHelper() {
+        mHelper = new DaoMaster.DevOpenHelper(MApplication.getInstance(), DB_NAME, null);
         db = mHelper.getWritableDatabase();
         // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
         mDaoMaster = new DaoMaster(db);
@@ -21,10 +23,10 @@ public class DbHelper {
 
     private static DbHelper instance;
 
-    public static DbHelper getInstance(){
-        if(null == instance){
-            synchronized (DbHelper.class){
-                if(null == instance){
+    public static DbHelper getInstance() {
+        if (null == instance) {
+            synchronized (DbHelper.class) {
+                if (null == instance) {
                     instance = new DbHelper();
                 }
             }

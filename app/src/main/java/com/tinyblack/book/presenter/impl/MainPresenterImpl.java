@@ -2,6 +2,7 @@
 package com.tinyblack.book.presenter.impl;
 
 import android.support.annotation.NonNull;
+
 import com.hwangjr.rxbus.RxBus;
 import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
@@ -10,6 +11,7 @@ import com.tinyblack.basemvplib.IView;
 import com.tinyblack.basemvplib.impl.BasePresenterImpl;
 import com.tinyblack.book.base.observer.SimpleObserver;
 import com.tinyblack.book.bean.BookShelfBean;
+import com.tinyblack.book.bean.ChapterListBean;
 import com.tinyblack.book.dao.BookInfoBeanDao;
 import com.tinyblack.book.dao.BookShelfBeanDao;
 import com.tinyblack.book.dao.ChapterListBeanDao;
@@ -24,6 +26,7 @@ import com.tinyblack.book.model.impl.WebBookModelImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -43,7 +46,10 @@ public class MainPresenterImpl extends BasePresenterImpl<IMainView> implements I
                     List<BookInfoBean> temp = DbHelper.getInstance().getmDaoSession().getBookInfoBeanDao().queryBuilder().where(BookInfoBeanDao.Properties.NoteUrl.eq(bookShelfes.get(i).getNoteUrl())).limit(1).build().list();
                     if (temp != null && temp.size() > 0) {
                         BookInfoBean bookInfoBean = temp.get(0);
-                        bookInfoBean.setChapterlist(DbHelper.getInstance().getmDaoSession().getChapterListBeanDao().queryBuilder().where(ChapterListBeanDao.Properties.NoteUrl.eq(bookShelfes.get(i).getNoteUrl())).orderAsc(ChapterListBeanDao.Properties.DurChapterIndex).build().list());
+                        List<ChapterListBean> chapterList = DbHelper.getInstance().getmDaoSession().getChapterListBeanDao().queryBuilder()
+                                .where(ChapterListBeanDao.Properties.NoteUrl.eq(bookShelfes.get(i).getNoteUrl()))
+                                .orderAsc(ChapterListBeanDao.Properties.DurChapterIndex).build().list();
+                        bookInfoBean.setChapterlist(chapterList);
                         bookShelfes.get(i).setBookInfoBean(bookInfoBean);
                     } else {
                         DbHelper.getInstance().getmDaoSession().getBookShelfBeanDao().delete(bookShelfes.get(i));
@@ -77,21 +83,21 @@ public class MainPresenterImpl extends BasePresenterImpl<IMainView> implements I
                 });
     }
 
-    public void startRefreshBook(List<BookShelfBean> value){
-        if (value != null && value.size() > 0){
+    public void startRefreshBook(List<BookShelfBean> value) {
+        if (value != null && value.size() > 0) {
             mView.setRecyclerMaxProgress(value.size());
-            refreshBookShelf(value,0);
-        }else{
+            refreshBookShelf(value, 0);
+        } else {
             mView.refreshFinish();
         }
     }
 
     private void refreshBookShelf(final List<BookShelfBean> value, final int index) {
-        if (index<=value.size()-1) {
+        if (index <= value.size() - 1) {
             WebBookModelImpl.getInstance().getChapterList(value.get(index), new OnGetChapterListListener() {
                 @Override
                 public void success(BookShelfBean bookShelfBean) {
-                    saveBookToShelf(value,index);
+                    saveBookToShelf(value, index);
                 }
 
                 @Override
@@ -104,7 +110,7 @@ public class MainPresenterImpl extends BasePresenterImpl<IMainView> implements I
         }
     }
 
-    private void saveBookToShelf(final List<BookShelfBean> datas, final int index){
+    private void saveBookToShelf(final List<BookShelfBean> datas, final int index) {
         Observable.create(new ObservableOnSubscribe<BookShelfBean>() {
             @Override
             public void subscribe(ObservableEmitter<BookShelfBean> e) throws Exception {
@@ -118,7 +124,7 @@ public class MainPresenterImpl extends BasePresenterImpl<IMainView> implements I
                     @Override
                     public void onNext(BookShelfBean value) {
                         mView.refreshRecyclerViewItemAdd();
-                        refreshBookShelf(datas,index+1);
+                        refreshBookShelf(datas, index + 1);
                     }
 
                     @Override

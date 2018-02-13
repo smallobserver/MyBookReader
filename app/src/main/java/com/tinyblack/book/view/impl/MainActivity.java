@@ -165,22 +165,6 @@ public class MainActivity extends MBaseActivity<IMainPresenter> implements IMain
 
     @Override
     protected void firstRequest() {
-        //通过百度API 判断是否有更新
-        try {
-            BDAutoUpdateSDK.uiUpdateAction(this, new UICheckUpdateCallback() {
-                @Override
-                public void onNoUpdateFound() {
-
-                }
-
-                @Override
-                public void onCheckComplete() {
-
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         mPresenter.queryBookShelf(false);
     }
 

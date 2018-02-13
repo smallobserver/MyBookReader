@@ -15,11 +15,14 @@
  */
 package com.tinyblack.book.api;
 
+import android.text.TextUtils;
+
 import com.tinyblack.book.api.support.Constant;
 import com.tinyblack.book.api.support.HeaderInterceptor;
 import com.tinyblack.book.api.support.Logger;
 import com.tinyblack.book.api.support.LoggingInterceptor;
 import com.tinyblack.book.bean.AutoComplete;
+import com.tinyblack.book.bean.BookContentBean;
 import com.tinyblack.book.bean.BookHelp;
 import com.tinyblack.book.bean.BookHelpList;
 import com.tinyblack.book.bean.BookLists;
@@ -150,7 +153,7 @@ public class BookApi {
         return service.getBookMixAToc(bookId, view);
     }
 
-    public Observable<List<ChapterListBean>> getBookChapterList(String bookId, String view) {
+    public Observable<List<ChapterListBean>> getBookChapterList(final String bookId, String view) {
         return getBookMixAToc(bookId, view)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -165,11 +168,11 @@ public class BookApi {
                                 for (int i = 0; i < chapters.size(); i++) {
                                     BookMixAToc.mixToc.Chapters chapter = chapters.get(i);
                                     ChapterListBean chapterListBean = new ChapterListBean();
-                                    chapterListBean.setNoteUrl(mixToc._id);
+                                    chapterListBean.setNoteUrl(bookId);
                                     chapterListBean.setDurChapterIndex(i);
                                     chapterListBean.setDurChapterUrl(chapter.link);   //id
                                     chapterListBean.setDurChapterName(chapter.title);
-                                    chapterListBean.setTag(Constant.CHAPTER_BASE);
+                                    chapterListBean.setTag(bookId);
                                     chapterListBeans.add(chapterListBean);
                                 }
                             }
@@ -182,6 +185,26 @@ public class BookApi {
 
     public synchronized Observable<ChapterRead> getChapterRead(String url) {
         return service.getChapterRead(url);
+    }
+
+    public synchronized Observable<BookContentBean> getChapterContent(final String url, final String tag, final int chapterIndex) {
+        return getChapterRead(url).map(new Function<ChapterRead, BookContentBean>() {
+            @Override
+            public BookContentBean apply(ChapterRead chapterRead) throws Exception {
+                BookContentBean bookContentBean = new BookContentBean();
+                bookContentBean.setDurChapterIndex(chapterIndex);
+                bookContentBean.setDurChapterUrl(url);
+                bookContentBean.setTag(tag);
+                if (chapterRead.chapter != null && !TextUtils.isEmpty(chapterRead.chapter.body)) {
+                    //内容格式化下
+                    String body = chapterRead.chapter.body.replace(Constant.ENTER, Constant.ENTER + Constant.TWO_SPACE);
+                    bookContentBean.setDurCapterContent(Constant.TWO_SPACE + body);
+                    bookContentBean.setRight(true);
+                }
+                return bookContentBean;
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread());
     }
 
     public synchronized Observable<List<BookSource>> getBookSource(String view, String book) {

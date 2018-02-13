@@ -112,7 +112,7 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
                 bookShelfResult.setFinalDate(System.currentTimeMillis());
                 bookShelfResult.setDurChapter(0);
                 bookShelfResult.setDurChapterPage(0);
-                bookShelfResult.setTag(searchBook.getTag());
+                bookShelfResult.setTag(searchBook.getNoteUrl());
 //                return WebBookModelImpl.getInstance().getBookInfo(bookShelfResult);
                 return getBookInfo(bookShelfResult);
             }
@@ -178,8 +178,8 @@ public class BookDetailPresenterImpl extends BasePresenterImpl<IBookDetailView> 
         return bookApi.getBookDetail(bookShelfResult.getNoteUrl()).map(new Function<BookDetail, BookShelfBean>() {
             @Override
             public BookShelfBean apply(BookDetail bookDetail) throws Exception {
-                bookShelfResult.setTag(TAG);
                 bookShelfResult.setNoteUrl(bookDetail._id);
+                bookShelfResult.setTag(bookDetail._id);
                 bookShelfResult.setBookInfoBean(analyBookinfo(bookDetail));
                 return bookShelfResult;
             }

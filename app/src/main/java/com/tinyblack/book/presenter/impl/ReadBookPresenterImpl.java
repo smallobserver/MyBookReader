@@ -56,8 +56,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> implements IBookReadPresenter {
     private static final String TAG = "ReadBookPresenterImpl0";
-    private static final String TWO_SPACE = "\t\t\t\t";
-    private static final String ENTER = "\n";
 
     public final static int OPEN_FROM_OTHER = 0;
     public final static int OPEN_FROM_APP = 1;
@@ -238,22 +236,7 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                                             && bookShelf.getBookInfoBean().getChapterlist().get(chapterIndex) == null)
                                         return;
                                     final String durChapterUrl = bookShelf.getBookInfoBean().getChapterlist().get(chapterIndex).getDurChapterUrl();
-                                    bookApi.getChapterRead(durChapterUrl).map(new Function<ChapterRead, BookContentBean>() {
-                                        @Override
-                                        public BookContentBean apply(ChapterRead chapterRead) throws Exception {
-                                            BookContentBean bookContentBean = new BookContentBean();
-                                            bookContentBean.setDurChapterIndex(chapterIndex);
-                                            bookContentBean.setDurChapterUrl(durChapterUrl);
-                                            bookContentBean.setTag(bookShelf.getTag());
-                                            if (chapterRead.chapter != null && !TextUtils.isEmpty(chapterRead.chapter.body)) {
-                                                //内容格式化下
-                                                String body = chapterRead.chapter.body.replace(ENTER, ENTER + TWO_SPACE);
-                                                bookContentBean.setDurCapterContent(TWO_SPACE + body);
-                                                bookContentBean.setRight(true);
-                                            }
-                                            return bookContentBean;
-                                        }
-                                    })
+                                    bookApi.getChapterContent(durChapterUrl, bookShelf.getTag(), chapterIndex)
                                             .map(new Function<BookContentBean, BookContentBean>() {
                                                 @Override
                                                 public BookContentBean apply(BookContentBean bookContentBean) throws Exception {
@@ -265,8 +248,6 @@ public class ReadBookPresenterImpl extends BasePresenterImpl<IBookReadView> impl
                                                     return bookContentBean;
                                                 }
                                             })
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribeOn(Schedulers.newThread())
                                             .compose(((BaseActivity) mView.getContext()).<BookContentBean>bindUntilEvent(ActivityEvent.DESTROY))
                                             .subscribe(new SimpleObserver<BookContentBean>() {
                                                 @Override

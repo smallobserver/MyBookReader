@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -18,6 +19,7 @@ import com.tinyblack.book.widget.MTextView;
 import java.util.List;
 
 public class BookContentView extends FrameLayout {
+    private static final String TAG = "BookContentView";
     public long qTag = System.currentTimeMillis();
     private static final String TWO_SPACE = "\t\t";
     private static final String ENTER = "\n";
@@ -236,7 +238,14 @@ public class BookContentView extends FrameLayout {
         float ascent = tvContent.getPaint().ascent();
         float descent = tvContent.getPaint().descent();
         float textHeight = descent - ascent;
-        return (int) ((height * 1.0f - tvContent.getLineSpacingExtra()) / (textHeight + tvContent.getLineSpacingExtra())) + 1;
+        //调整下 如果空白超过0.45就显示多一行
+        float lines = (height * 1.0f - tvContent.getLineSpacingExtra()) / (textHeight + tvContent.getLineSpacingExtra());
+        int linesInt = (int) (lines / 1);
+        if (lines >= linesInt + 0.45) {
+            return linesInt + 1;
+        } else {
+            return linesInt;
+        }
     }
 
     public void setReadBookControl(ReadBookControl readBookControl) {

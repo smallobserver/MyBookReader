@@ -31,6 +31,8 @@ import java.util.List;
  * @date 16/8/5.
  */
 public class Constant {
+    public static final String TWO_SPACE = "\t\t\t\t";
+    public static final String ENTER = "\n";
 
     public static final String IMG_BASE_URL = "http://statics.zhuishushenqi.com";
 

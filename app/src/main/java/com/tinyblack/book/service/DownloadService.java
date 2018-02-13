@@ -18,6 +18,7 @@ import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
 import com.tinyblack.book.R;
+import com.tinyblack.book.api.BookApi;
 import com.tinyblack.book.base.observer.SimpleObserver;
 import com.tinyblack.book.bean.BookContentBean;
 import com.tinyblack.book.bean.BookShelfBean;
@@ -29,7 +30,6 @@ import com.tinyblack.book.dao.BookContentBeanDao;
 import com.tinyblack.book.dao.BookShelfBeanDao;
 import com.tinyblack.book.dao.DbHelper;
 import com.tinyblack.book.dao.DownloadChapterBeanDao;
-import com.tinyblack.book.model.impl.WebBookModelImpl;
 import com.tinyblack.book.view.impl.MainActivity;
 
 import java.util.List;
@@ -199,7 +199,7 @@ public class DownloadService extends Service {
                 @Override
                 public ObservableSource<BookContentBean> apply(final BookContentBean bookContentBean) throws Exception {
                     if (bookContentBean.getDurChapterUrl() == null || bookContentBean.getDurChapterUrl().length() <= 0) {
-                        return WebBookModelImpl.getInstance().getBookContent(data.getDurChapterUrl(), data.getDurChapterIndex(), data.getTag()).map(new Function<BookContentBean, BookContentBean>() {
+                        return BookApi.getInstance().getChapterContent(data.getDurChapterUrl(), data.getTag(), data.getDurChapterIndex()).map(new Function<BookContentBean, BookContentBean>() {
                             @Override
                             public BookContentBean apply(BookContentBean bookContentBean) throws Exception {
                                 DbHelper.getInstance().getmDaoSession().getDownloadChapterBeanDao().delete(data);
@@ -227,18 +227,18 @@ public class DownloadService extends Service {
                     .subscribe(new SimpleObserver<BookContentBean>() {
                         @Override
                         public void onNext(BookContentBean value) {
-                            if(isStartDownload){
+                            if (isStartDownload) {
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if(isStartDownload){
+                                        if (isStartDownload) {
                                             toDownload();
-                                        }else{
+                                        } else {
                                             isPause();
                                         }
                                     }
-                                },800);
-                            }else{
+                                }, 800);
+                            } else {
                                 isPause();
                             }
                         }
@@ -265,18 +265,18 @@ public class DownloadService extends Service {
                         .subscribe(new SimpleObserver<Boolean>() {
                             @Override
                             public void onNext(Boolean value) {
-                                if(isStartDownload){
+                                if (isStartDownload) {
                                     new Handler().postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if(isStartDownload){
+                                            if (isStartDownload) {
                                                 toDownload();
-                                            }else{
+                                            } else {
                                                 isPause();
                                             }
                                         }
-                                    },800);
-                                }else{
+                                    }, 800);
+                                } else {
                                     isPause();
                                 }
                             }
@@ -284,7 +284,7 @@ public class DownloadService extends Service {
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                if(!isStartDownload)
+                                if (!isStartDownload)
                                     isPause();
                             }
                         });
@@ -367,9 +367,9 @@ public class DownloadService extends Service {
                 .subscribe(new SimpleObserver<DownloadChapterBean>() {
                     @Override
                     public void onNext(DownloadChapterBean value) {
-                        if (value.getNoteUrl() != null && value.getNoteUrl().length() > 0){
+                        if (value.getNoteUrl() != null && value.getNoteUrl().length() > 0) {
                             RxBus.get().post(RxBusTag.PAUSE_DOWNLOAD_LISTENER, new Object());
-                        }else{
+                        } else {
                             RxBus.get().post(RxBusTag.FINISH_DOWNLOAD_LISTENER, new Object());
                         }
                     }
@@ -391,8 +391,8 @@ public class DownloadService extends Service {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 //点击通知后自动清除
                 .setAutoCancel(true)
-                .setContentTitle("正在下载："+downloadChapterBean.getBookName())
-                .setContentText(downloadChapterBean.getDurChapterName()==null?"  ":downloadChapterBean.getDurChapterName())
+                .setContentTitle("正在下载：" + downloadChapterBean.getBookName())
+                .setContentText(downloadChapterBean.getDurChapterName() == null ? "  " : downloadChapterBean.getDurChapterName())
                 .setContentIntent(mainPendingIntent);
         //发送通知
         notifyManager.notify(notifiId, builder.build());

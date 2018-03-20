@@ -10,7 +10,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 22
         versionCode 9
-        versionName "1.2.5"
+        versionName "1.2.6"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "debug"]
     }
 

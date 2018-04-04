@@ -48,5 +48,18 @@ public class RecommendBookList extends Base {
         public int bookCount;
         public String cover;
         public int collectorCount;
+
+        @Override
+        public String toString() {
+            return "RecommendBook{" +
+                    "id='" + id + '\'' +
+                    ", title='" + title + '\'' +
+                    ", author='" + author + '\'' +
+                    ", desc='" + desc + '\'' +
+                    ", bookCount=" + bookCount +
+                    ", cover='" + cover + '\'' +
+                    ", collectorCount=" + collectorCount +
+                    '}';
+        }
     }
 }

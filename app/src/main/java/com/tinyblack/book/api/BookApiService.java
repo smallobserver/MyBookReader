@@ -48,9 +48,13 @@ import com.tinyblack.book.bean.RecommendBookList;
 import com.tinyblack.book.bean.user.Following;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -69,6 +73,7 @@ public interface BookApiService {
 
     /**
      * 获取正版源(若有) 与 盗版源
+     *
      * @param view
      * @param book
      * @return
@@ -389,4 +394,8 @@ public interface BookApiService {
 
     @GET("/post/original")
     Observable<DiscussionList> getBookOriginalList(@Query("block") String block, @Query("duration") String duration, @Query("sort") String sort, @Query("type") String type, @Query("start") String start, @Query("limit") String limit, @Query("distillate") String distillate);
+
+    @FormUrlEncoded
+    @POST("/book/updated")
+    Observable<List<Recommend.RecommendBooks>> getUpdatedList(@Field("id") String id);
 }

@@ -72,6 +72,29 @@ public class Recommend extends Base {
         }
 
         @Override
+        public String toString() {
+            return "RecommendBooks{" +
+                    "_id='" + _id + '\'' +
+                    ", author='" + author + '\'' +
+                    ", cover='" + cover + '\'' +
+                    ", shortIntro='" + shortIntro + '\'' +
+                    ", title='" + title + '\'' +
+                    ", hasCp=" + hasCp +
+                    ", isTop=" + isTop +
+                    ", isSeleted=" + isSeleted +
+                    ", showCheckBox=" + showCheckBox +
+                    ", isFromSD=" + isFromSD +
+                    ", path='" + path + '\'' +
+                    ", latelyFollower=" + latelyFollower +
+                    ", retentionRatio=" + retentionRatio +
+                    ", updated='" + updated + '\'' +
+                    ", chaptersCount=" + chaptersCount +
+                    ", lastChapter='" + lastChapter + '\'' +
+                    ", recentReadingTime='" + recentReadingTime + '\'' +
+                    '}';
+        }
+
+        @Override
         public int hashCode() {
             return this._id.hashCode();
         }

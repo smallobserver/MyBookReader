@@ -53,6 +53,7 @@ import com.tinyblack.book.bean.Rankings;
 import com.tinyblack.book.bean.RecommendBookList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -297,6 +298,13 @@ public class BookApi {
 
     public Observable<DiscussionList> getGirlBookDisscussionList(String block, String duration, String sort, String type, String start, String limit, String distillate) {
         return service.getBookDisscussionList(block, duration, sort, type, start, limit, distillate);
+    }
+
+    public Observable<List<Recommend.RecommendBooks>> getUpdatedList(String ids) {
+//        HashMap<String, String> map = new HashMap<>();
+//        map.put("id", ids);
+//        return service.getUpdatedList(map);
+        return service.getUpdatedList(ids);
     }
 
 }

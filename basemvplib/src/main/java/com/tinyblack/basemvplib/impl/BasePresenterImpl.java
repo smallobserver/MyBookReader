@@ -22,6 +22,11 @@ public abstract class BasePresenterImpl<T extends IView> implements IPresenter {
         mView = (T) iView;
     }
 
+    @Override
+    public void detachView() {
+        cleanSubscribe();
+    }
+
     public void addSubscribe(Disposable disposable) {
         if (disposable == null) return;
         disposableManager.add(disposable);

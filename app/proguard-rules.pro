@@ -205,3 +205,4 @@ public static java.lang.String TABLENAME;
 
 ##百度自动更新
 -keep class com.baidu.**{*;}
+-keep class com.tinyblack.book.presenter.impl.MainPresenterImpl{ *; }
